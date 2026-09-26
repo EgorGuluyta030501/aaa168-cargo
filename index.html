@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Карго из Китая — доставка грузов под ключ</title>
+  <meta name="description" content="Доставка грузов из Китая: авто, авиа, ж/д. Выкуп, проверка, упаковка, страховка.">
+  <meta name="theme-color" content="#0c0f16">
+  <link rel="icon" href="assets/logo.jpg">
+  <link rel="apple-touch-icon" href="assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a class="logo" href="#top" data-brand aria-label="На главную"></a>
+    <nav class="nav" id="nav" aria-label="Основное меню">
+      <div class="nav__links" id="nav-links"></div>
+      <div class="nav__extra">
+        <a class="nav__phone" data-phone></a>
+        <a class="btn btn--primary" href="#contact">Получить расчёт</a>
+      </div>
+    </nav>
+    <a class="header__phone" data-phone></a>
+    <a class="btn btn--primary btn--sm header__cta" href="#contact">Получить расчёт</a>
+    <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ГЛАВНЫЙ ЭКРАН -->
+  <section class="hero">
+    <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__glyphs" aria-hidden="true">
+      <span class="hero__glyph hero__glyph--1">运</span>
+      <span class="hero__glyph hero__glyph--2">货</span>
+    </div>
+    <div class="container hero__inner">
+      <div class="badge" data-text="hero.badge"></div>
+      <h1 class="hero__title" data-rich="hero.title"></h1>
+      <p class="hero__text" data-text="hero.text"></p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" href="#contact" data-text="hero.primaryBtn"></a>
+        <a class="btn btn--ghost btn--lg" href="#transport" data-text="hero.secondaryBtn"></a>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker__track" id="ticker"></div></div>
+  </section>
+
+  <!-- ВИДЫ ПЕРЕВОЗОК -->
+  <section class="section" id="transport">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="transport.title"></h2>
+        <p class="section__lead" data-text="transport.lead"></p>
+      </div>
+      <div class="grid grid--3" id="transport-list"></div>
+    </div>
+  </section>
+
+  <!-- ПРЕИМУЩЕСТВА -->
+  <section class="section section--alt" id="advantages">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="advantages.title"></h2>
+        <p class="section__lead" data-text="advantages.lead"></p>
+      </div>
+      <div class="grid grid--3" id="advantages-list"></div>
+    </div>
+  </section>
+
+  <!-- КАК РАБОТАЕМ -->
+  <section class="section" id="steps">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="steps.title"></h2>
+        <p class="section__lead" data-text="steps.lead"></p>
+      </div>
+      <ol class="steps" id="steps-list"></ol>
+    </div>
+  </section>
+
+  <!-- СКЛАД: ВИДЕО -->
+  <section class="section section--alt" id="warehouse">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="warehouse.title"></h2>
+        <p class="section__lead" data-text="warehouse.lead"></p>
+      </div>
+      <div class="videos" id="warehouse-list"></div>
+    </div>
+  </section>
+
+  <!-- ОТЗЫВЫ -->
+  <section class="section" id="reviews">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="reviews.title"></h2>
+        <p class="section__lead" data-text="reviews.lead"></p>
+      </div>
+      <div class="reviews" id="reviews-list"></div>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР -->
+  <section class="section section--alt" id="calculator">
+    <div class="container split">
+      <div class="split__text">
+        <h2 class="section__title" data-rich="calculator.title"></h2>
+        <p class="section__lead" data-text="calculator.text"></p>
+        <ul class="bullets" id="calc-bullets"></ul>
+      </div>
+      <div class="panel reveal">
+        <div class="panel__head">
+          <h3 class="panel__title" data-text="calculator.panelTitle"></h3>
+          <span class="chip" id="calc-rate"></span>
+        </div>
+        <p class="panel__sub" data-text="calculator.panelSub"></p>
+        <div class="seg" id="calc-modes" role="tablist" aria-label="Способ доставки"></div>
+        <label class="field">
+          <span class="field__label">Вес груза, кг</span>
+          <input class="input" id="calc-weight" type="number" inputmode="decimal" min="0" step="1">
+        </label>
+        <div class="presets" id="calc-presets"></div>
+        <div class="result">
+          <div>
+            <div class="result__label" id="calc-label"></div>
+            <div class="result__price" id="calc-price">—</div>
+            <div class="result__note" id="calc-note"></div>
+          </div>
+          <a class="btn btn--primary" href="#contact" id="calc-fix" data-text="calculator.fixBtn"></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- О КОМПАНИИ -->
+  <section class="section" id="about">
+    <div class="container split split--even">
+      <div class="split__text">
+        <h2 class="section__title" data-rich="about.title"></h2>
+        <p class="section__lead" data-text="about.text"></p>
+        <blockquote class="quote" data-text="about.quote"></blockquote>
+        <div class="values" id="about-values"></div>
+      </div>
+      <div class="about__video reveal" id="about-video"></div>
+    </div>
+  </section>
+
+  <!-- ВОПРОСЫ -->
+  <section class="section section--alt" id="faq">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="faq.title"></h2>
+      </div>
+      <div class="faq" id="faq-list"></div>
+    </div>
+  </section>
+
+  <!-- ЗАЯВКА -->
+  <section class="section" id="contact">
+    <div class="container split">
+      <div class="split__text">
+        <h2 class="section__title" data-rich="contact.title"></h2>
+        <p class="section__lead" data-text="contact.text"></p>
+        <a class="contact__phone" data-phone></a>
+        <dl class="contact__list">
+          <div data-row="whatsappLabel"><dt>WhatsApp</dt><dd><a data-wa data-label="whatsappLabel" target="_blank" rel="noopener"></a></dd></div>
+          <div data-row="wechat"><dt>WeChat</dt><dd data-contact="wechat"></dd></div>
+          <div data-row="phone2"><dt>Телефон</dt><dd><a data-phone2></a></dd></div>
+          <div data-row="email"><dt>E-mail</dt><dd><a data-email></a></dd></div>
+        </dl>
+        <div class="contact__links">
+          <a class="link-arrow" data-wa target="_blank" rel="noopener">Написать в WhatsApp <span>→</span></a>
+          <a class="link-arrow" data-tgchat target="_blank" rel="noopener">Чат в Telegram <span>→</span></a>
+          <a class="link-arrow" data-tg target="_blank" rel="noopener">Наш канал <span>→</span></a>
+        </div>
+        <p class="contact__hours"><i></i><span data-text="contacts.hours"></span></p>
+      </div>
+
+      <form class="panel reveal" id="lead-form" novalidate>
+        <h3 class="panel__title" data-text="contact.formTitle"></h3>
+        <p class="panel__sub" data-text="contact.formSub"></p>
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Имя</span>
+            <input class="input" name="name" type="text" autocomplete="name" required>
+          </label>
+          <label class="field">
+            <span class="field__label">Телефон</span>
+            <input class="input" name="phone" type="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+          </label>
+        </div>
+        <label class="field">
+          <span class="field__label">Способ доставки</span>
+          <select class="input" name="mode" id="form-mode"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Что нужно привезти</span>
+          <textarea class="input" name="message" id="form-message" rows="4"></textarea>
+        </label>
+        <button class="btn btn--primary btn--lg" type="submit" data-text="contact.submitBtn"></button>
+        <p class="form__error" id="form-error" role="alert" hidden>Заполните имя и телефон</p>
+        <p class="form__hint" data-text="contact.hint"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo" href="#top" data-brand></a>
+        <p class="footer__about" data-text="footer.about"></p>
+        <a class="footer__phone" data-phone></a>
+        <a class="footer__link" data-tg target="_blank" rel="noopener">Telegram-канал</a>
+        <a class="footer__link" data-tgchat target="_blank" rel="noopener">Telegram-чат</a>
+        <a class="footer__link" data-wa target="_blank" rel="noopener">WhatsApp</a>
+        <a class="footer__link" data-email></a>
+      </div>
+      <div>
+        <p class="footer__title">Перевозки</p>
+        <ul id="footer-transport"></ul>
+      </div>
+      <div>
+        <p class="footer__title">Услуги</p>
+        <ul id="footer-advantages"></ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p data-text="footer.cities"></p>
+      <p>© <span id="year"></span> <span data-text="brand.company"></span></p>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" data-wa target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+  <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.13c-.24.68-1.42 1.3-1.95 1.34-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82s.7-2 .95-2.27c.25-.27.54-.34.72-.34h.52c.17 0 .39-.06.61.47.23.54.77 1.87.84 2 .07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.28-.12.56.16.27.7 1.16 1.51 1.88 1.04.93 1.92 1.21 2.19 1.35.27.14.43.11.59-.07.16-.18.68-.79.86-1.07.18-.27.36-.23.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.66-.17 1.3Z"/></svg>
+</a>
+
+<dialog class="lightbox" id="lightbox" aria-label="Просмотр">
+  <button class="lightbox__close" type="button" aria-label="Закрыть">×</button>
+  <img alt="">
+</dialog>
+
+<script src="content.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
