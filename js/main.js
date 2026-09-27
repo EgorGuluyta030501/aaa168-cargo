@@ -95,29 +95,6 @@
 
   $("#trust").innerHTML = (S.hero.trust || []).map((t) => `<li>${ICONS.check}${esc(t)}</li>`).join("");
 
-  /* ---------- Карточка маршрута ---------- */
-  const rt = S.hero.route;
-  if (rt) {
-    $("#route").innerHTML = `
-      <div class="route__head">
-        <span class="route__title">${esc(rt.title)}</span>
-        <span class="route__status"><i></i>${esc(rt.status)}</span>
-      </div>
-      <div class="route__map">
-        <div class="route__point"><strong>${esc(rt.from.name)}</strong><span>${esc(rt.from.sub)}</span></div>
-        <div class="route__line" aria-hidden="true"><span class="route__truck">${ICONS.truck}</span></div>
-        <div class="route__point route__point--end"><strong>${esc(rt.to.name)}</strong><span>${esc(rt.to.sub)}</span></div>
-      </div>
-      <ol class="route__steps">
-        ${rt.steps.map((s) => `
-          <li class="route__step is-${esc(s.state)}">
-            <span class="route__dot" aria-hidden="true">${s.state === "done" ? ICONS.check : ""}</span>
-            <div><strong>${esc(s.title)}</strong><span>${esc(s.text)}</span></div>
-          </li>`).join("")}
-      </ol>
-      <p class="route__note">${esc(rt.note)}</p>`;
-  }
-
   /* ---------- Карточки ---------- */
   // linkText пустой — карточка без нижней строки
   const card = (it, linkText) => `
@@ -255,6 +232,51 @@
   const countrySelect = $("#form-country");
   const clearanceSelect = $("#form-clearance");
   const options = (list) => list.map((v) => `<option>${esc(v)}</option>`).join("");
+
+  /* ---------- Быстрая заявка на главном экране ---------- */
+  const quick = $("#quick-form");
+  const countries = [...(CL ? CL.countries : []), "Другая страна"];
+  const clearances = [...(CL ? CL.options.map((o) => o.title.replace(" доставка", "").replace("-доставка", "")) : []), "Не знаю"];
+  let quickClearance = clearances[clearances.length - 1];
+
+  $("#quick-country").innerHTML = options(countries);
+  const qSeg = $("#quick-clearance");
+  qSeg.innerHTML = clearances
+    .map((c) => `<button type="button" role="radio" aria-checked="false" data-v="${esc(c)}">${esc(c)}</button>`)
+    .join("");
+  const paintSeg = () => $$("button", qSeg).forEach((b) => {
+    const on = b.dataset.v === quickClearance;
+    b.classList.toggle("is-active", on);
+    b.setAttribute("aria-checked", String(on));
+  });
+  qSeg.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    quickClearance = b.dataset.v;
+    paintSeg();
+  });
+  paintSeg();
+  $("#quick-weight").placeholder = S.hero.quick.weightPlaceholder;
+
+  quick.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const phone = quick.elements.phone;
+    const ok = phone.value.trim() !== "";
+    phone.classList.toggle("is-invalid", !ok);
+    $("#quick-error").hidden = ok;
+    if (!ok) { phone.focus(); return; }
+
+    const w = quick.elements.weight.value.trim();
+    const text = [
+      "Заявка на расчёт с сайта",
+      `Страна: ${quick.elements.country.value}`,
+      `Оформление: ${quickClearance}`,
+      w && `Вес: ${w} кг`,
+      `Телефон: ${phone.value.trim()}`,
+    ].filter(Boolean).join("\n");
+    window.open(waLink(text), "_blank", "noopener");
+  });
+  quick.elements.phone.addEventListener("input", (e) => e.target.classList.remove("is-invalid"));
   countrySelect.innerHTML = options([...(CL ? CL.countries : []), "Другая страна"]);
   clearanceSelect.innerHTML = options([S.contact.dontKnow, ...(CL ? CL.options.map((o) => o.title) : [])]);
 

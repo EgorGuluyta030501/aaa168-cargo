@@ -44,13 +44,37 @@
         <h1 class="hero__title" data-rich="hero.title"></h1>
         <p class="hero__text" data-text="hero.text"></p>
         <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="#contact" data-text="hero.primaryBtn"></a>
+          <a class="btn btn--primary btn--lg" data-wa target="_blank" rel="noopener" data-text="hero.primaryBtn"></a>
           <a class="btn btn--ghost btn--lg" href="#transport" data-text="hero.secondaryBtn"></a>
         </div>
         <ul class="trust" id="trust"></ul>
       </div>
 
-      <aside class="route reveal" id="route" aria-label="Пример отслеживания груза"></aside>
+      <form class="quick reveal" id="quick-form" novalidate>
+        <h2 class="quick__title" data-rich="hero.quick.title"></h2>
+        <p class="quick__sub" data-text="hero.quick.sub"></p>
+        <label class="field">
+          <span class="field__label">Страна доставки</span>
+          <select class="input" name="country" id="quick-country"></select>
+        </label>
+        <div class="field">
+          <span class="field__label">Оформление</span>
+          <div class="seg" id="quick-clearance" role="radiogroup" aria-label="Оформление"></div>
+        </div>
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label" data-text="hero.quick.weightLabel"></span>
+            <input class="input" name="weight" type="number" inputmode="decimal" min="0" id="quick-weight">
+          </label>
+          <label class="field">
+            <span class="field__label" data-text="hero.quick.phoneLabel"></span>
+            <input class="input" name="phone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__" required>
+          </label>
+        </div>
+        <button class="btn btn--primary btn--lg quick__btn" type="submit" data-text="hero.quick.submit"></button>
+        <p class="form__error" id="quick-error" role="alert" hidden>Укажите телефон, чтобы мы могли ответить</p>
+        <p class="quick__note"><i></i><span data-text="hero.quick.note"></span></p>
+      </form>
     </div>
     <div class="container">
       <div class="stats" id="stats"></div>
