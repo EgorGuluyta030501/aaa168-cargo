@@ -321,9 +321,19 @@
   // Полоса прокрутки вверху страницы
   const bar = $("#progress");
   let ticking = false;
+  // Кнопка «Наверх»: появляется после первого экрана, кольцо показывает, сколько пролистано
+  const toTop = $("#totop");
+  const ring = $("#totop circle");
+  const RING = 2 * Math.PI * 22;
+  ring.style.strokeDasharray = RING;
+  toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" }));
+
   const paintBar = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    const k = max > 0 ? window.scrollY / max : 0;
+    bar.style.transform = `scaleX(${k})`;
+    ring.style.strokeDashoffset = RING * (1 - k);
+    toTop.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.8);
     ticking = false;
   };
   window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(paintBar); } }, { passive: true });

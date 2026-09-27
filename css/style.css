@@ -653,6 +653,25 @@ select.input {
 .fab::before { color: #25d366; }
 .vcard__icon::after { color: var(--gold); }
 
+/* Кнопка «Наверх» — над кнопкой WhatsApp */
+.totop {
+  position: fixed; right: 23px; bottom: 90px; z-index: 40;
+  width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: rgba(24, 29, 43, .92); color: var(--gold);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 2px var(--line-2), 0 10px 30px rgba(0, 0, 0, .4);
+  opacity: 0; visibility: hidden; transform: translateY(14px) scale(.85);
+  transition: opacity .3s, visibility .3s, transform .35s cubic-bezier(.3, 1.4, .5, 1), background .2s, color .2s;
+}
+.totop.is-visible { opacity: 1; visibility: visible; transform: none; }
+.totop:hover { background: var(--gold); color: var(--gold-ink); }
+.totop__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.totop__ring circle { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
+.totop:hover .totop__ring circle { stroke: var(--gold-ink); }
+.totop__arrow { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s; }
+.totop:hover .totop__arrow { transform: translateY(-3px); }
+
 /* Бегущая строка останавливается при наведении */
 .ticker:hover .ticker__track { animation-play-state: paused; }
 
