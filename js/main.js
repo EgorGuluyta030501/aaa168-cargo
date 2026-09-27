@@ -17,6 +17,21 @@
   const fmt = (n) => Math.round(n).toLocaleString("ru-RU");
   const money = (n) => S.currency + fmt(n);
 
+  // Иконки для карточек: в content.js пишется имя иконки, например icon: "truck"
+  const svg = (body) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+  const ICONS = {
+    truck: svg('<path d="M2 5.5h12v10H2zM14 8.5h4l3.5 3.5v3.5H14"/><circle cx="6" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/>'),
+    train: svg('<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14"/><path d="M9 14h.01M15 14h.01"/><path d="m8 21 2-4M16 21l-2-4"/>'),
+    plane: svg('<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>'),
+    customs: svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="m9 15 2 2 4-4"/>'),
+    track: svg('<path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
+    camera: svg('<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>'),
+    manager: svg('<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20c0 1.1-1.3 2-3 2h-3"/>'),
+    box: svg('<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/>'),
+    shield: svg('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'),
+    check: svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
+  };
+
   const C = S.contacts;
   const waLink = (text) => `https://wa.me/${C.whatsapp}` + (text ? `?text=${encodeURIComponent(text)}` : "");
 
@@ -75,18 +90,40 @@
     .map((s) => `<div class="stat"><div class="stat__value">${esc(s.value)}</div><div class="stat__label">${esc(s.label)}</div></div>`)
     .join("");
 
-  const hasCJK = (s) => /[一-鿿]/.test(s);
-  const tickerHTML = S.ticker
-    .map((t) => `<span class="ticker__item${hasCJK(t) ? " ticker__item--cn" : ""}">${esc(t)}</span>`)
-    .join("");
+  const tickerHTML = S.ticker.map((t) => `<span class="ticker__item">${esc(t)}</span>`).join("");
   $("#ticker").innerHTML = tickerHTML + tickerHTML; // дубль для бесконечной прокрутки
+
+  $("#trust").innerHTML = (S.hero.trust || []).map((t) => `<li>${ICONS.check}${esc(t)}</li>`).join("");
+
+  /* ---------- Карточка маршрута ---------- */
+  const rt = S.hero.route;
+  if (rt) {
+    $("#route").innerHTML = `
+      <div class="route__head">
+        <span class="route__title">${esc(rt.title)}</span>
+        <span class="route__status"><i></i>${esc(rt.status)}</span>
+      </div>
+      <div class="route__map">
+        <div class="route__point"><strong>${esc(rt.from.name)}</strong><span>${esc(rt.from.sub)}</span></div>
+        <div class="route__line" aria-hidden="true"><span class="route__truck">${ICONS.truck}</span></div>
+        <div class="route__point route__point--end"><strong>${esc(rt.to.name)}</strong><span>${esc(rt.to.sub)}</span></div>
+      </div>
+      <ol class="route__steps">
+        ${rt.steps.map((s) => `
+          <li class="route__step is-${esc(s.state)}">
+            <span class="route__dot" aria-hidden="true">${s.state === "done" ? ICONS.check : ""}</span>
+            <div><strong>${esc(s.title)}</strong><span>${esc(s.text)}</span></div>
+          </li>`).join("")}
+      </ol>
+      <p class="route__note">${esc(rt.note)}</p>`;
+  }
 
   /* ---------- Карточки ---------- */
   // linkText пустой — карточка без нижней строки
   const card = (it, linkText) => `
     <article class="card reveal">
       <div class="card__top">
-        <span class="card__icon" aria-hidden="true">${esc(it.icon)}</span>
+        <span class="card__icon" aria-hidden="true">${ICONS[it.icon] || esc(it.icon)}</span>
         ${it.price ? `<span class="chip">${esc(it.price)}</span>` : ""}
       </div>
       <h3 class="card__title">${esc(it.title)}</h3>
