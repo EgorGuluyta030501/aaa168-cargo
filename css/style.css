@@ -372,25 +372,6 @@ select.input {
 .form__error { margin-top: 12px; color: #ff6b7a; font-size: 14px; font-weight: 700; }
 .form__hint { margin-top: 14px; color: var(--dim); font-size: 13px; }
 
-.presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -4px; }
-.preset {
-  height: 34px; padding: 0 14px; border-radius: 999px;
-  background: transparent; border: 1px solid var(--line-2); color: var(--muted);
-  font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: border-color .2s, color .2s;
-}
-.preset:hover { color: var(--text); }
-.preset.is-active { border-color: var(--gold); color: var(--gold); }
-
-.result {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;
-  margin-top: 22px; padding: 20px; border-radius: 16px;
-  background: var(--bg); border: 1px solid var(--line);
-}
-.result__label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.result__price { margin: 6px 0 4px; color: var(--gold); font-size: clamp(34px, 5vw, 46px); font-weight: 900; line-height: 1.05; letter-spacing: -.035em; }
-.result__note { color: var(--muted); font-size: 13px; }
-@media (max-width: 520px) { .result .btn { width: 100%; } }
-
 /* ---------- Вопросы ---------- */
 .faq { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
 .faq details + details { border-top: 1px solid var(--line); }
@@ -557,4 +538,132 @@ select.input {
   html { scroll-behavior: auto; }
   .ticker__track, .contact__hours i, .quick__note i { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   АНИМАЦИИ
+   ============================================================ */
+
+/* Полоса прокрутки */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-hi));
+  transform: scaleX(0); transform-origin: 0 50%;
+  box-shadow: 0 0 12px rgba(232, 182, 76, .6);
+  pointer-events: none;
+}
+
+/* Главный экран: появление по очереди */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.hero__main > * { animation: rise .8s cubic-bezier(.2, .7, .2, 1) both; }
+.hero__main > :nth-child(1) { animation-delay: .05s; }
+.hero__main > :nth-child(2) { animation-delay: .15s; }
+.hero__main > :nth-child(3) { animation-delay: .3s; }
+.hero__main > :nth-child(4) { animation-delay: .42s; }
+.hero__main > :nth-child(5) { animation-delay: .54s; }
+.quick { animation: rise 1s .35s cubic-bezier(.2, .7, .2, 1) both; }
+.stats { animation: rise .9s .6s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* Блик по золотому слову в заголовке */
+@keyframes shimmer { to { background-position: -200% center; } }
+.hero__title .accent {
+  background: linear-gradient(100deg, var(--gold) 20%, #fff1c2 40%, var(--gold) 60%) 0 center / 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+
+/* Плывущие золотые пятна и движение сетки */
+.hero__orb {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  filter: blur(70px); opacity: .5;
+}
+.hero__orb--1 {
+  width: 420px; height: 420px; right: 4%; top: 12%;
+  background: radial-gradient(circle, rgba(232, 182, 76, .45), transparent 70%);
+  animation: float-a 16s ease-in-out infinite alternate;
+}
+.hero__orb--2 {
+  width: 340px; height: 340px; left: -6%; bottom: 0;
+  background: radial-gradient(circle, rgba(232, 182, 76, .25), transparent 70%);
+  animation: float-b 20s ease-in-out infinite alternate;
+}
+@keyframes float-a { to { transform: translate(-120px, 80px) scale(1.15); } }
+@keyframes float-b { to { transform: translate(140px, -60px) scale(.9); } }
+@keyframes grid-drift { to { background-position: 64px 64px, 64px 64px; } }
+.hero__grid { animation: grid-drift 12s linear infinite; }
+
+/* Бегущая по рамке формы золотая линия */
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes spin-border { to { --angle: 360deg; } }
+.quick {
+  border: 1px solid transparent;
+  background:
+    radial-gradient(360px circle at var(--mx, -400px) var(--my, -400px), rgba(232, 182, 76, .08), transparent 60%) padding-box,
+    linear-gradient(160deg, #1e2435, #141824) padding-box,
+    conic-gradient(from var(--angle), rgba(232, 182, 76, .15) 0deg, rgba(232, 182, 76, .15) 250deg, var(--gold) 310deg, #fff1c2 330deg, rgba(232, 182, 76, .15) 360deg) border-box;
+  animation: rise 1s .35s cubic-bezier(.2, .7, .2, 1) both, spin-border 6s linear infinite;
+}
+.quick::before { display: none; }
+
+/* Подсветка за курсором */
+.card, .option, .step, .value, .review {
+  background-image: radial-gradient(320px circle at var(--mx, -400px) var(--my, -400px), rgba(232, 182, 76, .09), transparent 60%);
+}
+
+/* Блик по золотым кнопкам */
+.btn--primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn--primary::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+  transform: translateX(-120%); transition: transform .7s ease;
+}
+.btn--primary:hover::after { transform: translateX(120%); }
+.btn--primary:hover { box-shadow: 0 8px 28px rgba(232, 182, 76, .35); }
+
+/* Черта над заголовками разделов */
+.section__head::before {
+  content: ""; display: block; width: 0; height: 3px; margin-bottom: 18px;
+  border-radius: 3px; background: linear-gradient(90deg, var(--gold), transparent);
+  transition: width 1s .2s cubic-bezier(.2, .7, .2, 1);
+}
+.section__head.is-seen::before { width: 56px; }
+.section__head:not(.reveal)::before { width: 56px; }
+
+/* Иконки карточек при наведении */
+.card:hover .card__icon, .option:hover .card__icon { transform: rotate(-6deg) scale(1.06); }
+.card__icon { transition: background .25s, color .25s, transform .35s cubic-bezier(.2, .7, .2, 1); }
+
+/* Чипы стран выскакивают по очереди */
+@keyframes pop { from { opacity: 0; transform: scale(.6) translateY(8px); } to { opacity: 1; transform: none; } }
+.countries.is-seen .countries__list li { animation: pop .5s cubic-bezier(.3, 1.4, .5, 1) both; animation-delay: calc(var(--i, 0) * 70ms + .2s); }
+.countries__list li { transition: border-color .2s, transform .2s; }
+.countries__list li:hover { border-color: rgba(232, 182, 76, .5); transform: translateY(-2px); }
+
+/* Номера шагов */
+.step__num { display: inline-block; transition: transform .3s; }
+.step:hover .step__num { transform: translateX(4px); }
+
+/* Кольца у кнопки WhatsApp и кнопок видео */
+@keyframes ring { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(1.7); opacity: 0; } }
+.fab::before, .vcard__icon::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid currentColor; animation: ring 2.4s ease-out infinite;
+}
+.fab::before { color: #25d366; }
+.vcard__icon::after { color: var(--gold); }
+
+/* Бегущая строка останавливается при наведении */
+.ticker:hover .ticker__track { animation-play-state: paused; }
+
+/* Логотип */
+.logo__img { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+.logo:hover .logo__img { transform: rotate(-14deg) scale(1.08); }
+
+/* Кто просил меньше движения — всё выключаем */
+@media (prefers-reduced-motion: reduce) {
+  .hero__main > *, .quick, .stats, .hero__title .accent, .hero__orb, .hero__grid,
+  .countries.is-seen .countries__list li, .fab::before, .vcard__icon::after { animation: none !important; }
+  .section__head::before { width: 56px; transition: none; }
+  .btn--primary::after { display: none; }
 }

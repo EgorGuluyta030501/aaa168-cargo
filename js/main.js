@@ -18,8 +18,6 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const rich = (s) => esc(s).replace(/\*(.+?)\*/g, '<span class="accent">$1</span>');
   const plain = (s) => String(s ?? "").replace(/\*/g, "");
-  const fmt = (n) => Math.round(n).toLocaleString("ru-RU");
-  const money = (n) => S.currency + fmt(n);
 
   // Иконки для карточек: в content.js пишется имя иконки, например icon: "truck"
   const svg = (body) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
@@ -226,9 +224,8 @@
   const form = $("#lead-form");
   const modeSelect = $("#form-mode");
   const message = $("#form-message");
-  const calc = S.calculator;
 
-  modeSelect.innerHTML = [S.contact.dontKnow, ...calc.modes.map((m) => m.name)]
+  modeSelect.innerHTML = [S.contact.dontKnow, ...(S.contact.modes || [])]
     .map((v) => `<option>${esc(v)}</option>`)
     .join("");
   message.placeholder = S.contact.messagePlaceholder;
@@ -318,81 +315,54 @@
   });
   $$("input", form).forEach((f) => f.addEventListener("input", () => f.classList.remove("is-invalid")));
 
-  /* ---------- Калькулятор ---------- */
-  $("#calc-bullets").innerHTML = calc.bullets.map((b) => `<li>${esc(b)}</li>`).join("");
+  /* ---------- Анимации ---------- */
+  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const modesEl = $("#calc-modes");
-  const weightEl = $("#calc-weight");
-  const presetsEl = $("#calc-presets");
-  let mode = calc.modes[0];
+  // Полоса прокрутки вверху страницы
+  const bar = $("#progress");
+  let ticking = false;
+  const paintBar = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    ticking = false;
+  };
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(paintBar); } }, { passive: true });
+  paintBar();
 
-  modesEl.innerHTML = calc.modes
-    .map((m, i) => `<button type="button" role="tab" data-i="${i}" aria-selected="${i === 0}">${esc(m.name)}</button>`)
-    .join("");
-  presetsEl.innerHTML = calc.presets
-    .map((p) => `<button type="button" class="preset" data-w="${p}">${fmt(p)} кг</button>`)
-    .join("");
-  weightEl.value = calc.defaultWeight;
-
-  const readWeight = () => Math.max(0, parseFloat(String(weightEl.value).replace(",", ".")) || 0);
-
-  function updateCalc() {
-    const w = readWeight();
-    const priced = typeof mode.rate === "number";
-    const rateChip = $("#calc-rate");
-    const note = [];
-
-    if (priced) {
-      const billable = w > 0 ? Math.max(w, calc.minWeight || 0) : 0;
-      const total = billable * mode.rate;
-      $("#calc-label").textContent = calc.priceLabel;
-      $("#calc-price").textContent = w > 0 ? money(total) : "—";
-      if (calc.local && w > 0) note.push(`≈ ${fmt(total * calc.local.rate)} ${calc.local.symbol}`);
-      note.push(`срок ${mode.term}`);
-      if (w > 0 && w < (calc.minWeight || 0)) note.push(`минимум ${calc.minWeight} кг`);
-    } else {
-      // тарифа нет — показываем срок, цену называет менеджер
-      $("#calc-label").textContent = calc.resultLabel;
-      $("#calc-price").textContent = mode.term;
-      note.push(calc.noPriceNote);
-    }
-    rateChip.hidden = !priced;
-    if (priced) rateChip.textContent = `${S.currency}${mode.rate}/кг`;
-    $("#calc-note").textContent = note.join(" · ");
-
-    $$("button", modesEl).forEach((b) => {
-      const on = calc.modes[b.dataset.i] === mode;
-      b.classList.toggle("is-active", on);
-      b.setAttribute("aria-selected", String(on));
+  // Подсветка карточек за курсором
+  if (!calm && window.matchMedia("(hover: hover)").matches) {
+    document.addEventListener("pointermove", (e) => {
+      const el = e.target.closest(".card, .option, .step, .value, .review, .quick");
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
     });
-    $$(".preset", presetsEl).forEach((b) => b.classList.toggle("is-active", Number(b.dataset.w) === w));
   }
 
-  modesEl.addEventListener("click", (e) => {
-    const b = e.target.closest("button");
-    if (!b) return;
-    mode = calc.modes[b.dataset.i];
-    updateCalc();
-  });
-  presetsEl.addEventListener("click", (e) => {
-    const b = e.target.closest(".preset");
-    if (!b) return;
-    weightEl.value = b.dataset.w;
-    updateCalc();
-  });
-  weightEl.addEventListener("input", updateCalc);
+  // Числа в полосе сроков отсчитываются от нуля: «от 12 дней», «5–8 дней»
+  const countUp = (el) => {
+    const src = el.textContent;
+    const nums = src.match(/\d+/g);
+    if (!nums || calm) return;
+    const t0 = performance.now();
+    const dur = 1400;
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / dur);
+      const ease = 1 - Math.pow(1 - k, 3);
+      let i = 0;
+      el.textContent = src.replace(/\d+/g, () => Math.round(Number(nums[i++]) * ease));
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
 
-  $("#calc-fix").addEventListener("click", () => {
-    const w = readWeight();
-    modeSelect.value = mode.name;
-    if (w <= 0) return;
-    const price = typeof mode.rate === "number" ? ` ≈ ${$("#calc-price").textContent}` : "";
-    message.value = `Расчёт с сайта: ${mode.name}, ${fmt(w)} кг${price}. Груз: `;
-  });
-
-  updateCalc();
+  // Чипы стран выскакивают по очереди
+  $$("#countries-list li").forEach((li, i) => li.style.setProperty("--i", i));
 
   /* ---------- Подсветка пункта меню и появление блоков ---------- */
+  $$(".section__head").forEach((el) => el.classList.add("reveal"));
+
   if ("IntersectionObserver" in window) {
     const links = $$("#nav-links a");
     const spy = new IntersectionObserver((entries) => {
@@ -407,18 +377,29 @@
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
         const el = en.target;
-        el.classList.add("is-in");
+        el.classList.add("is-in", "is-seen"); // is-seen остаётся навсегда — для черты над заголовком и чипов
         io.unobserve(el);
         // после анимации возвращаем карточкам их собственный hover
-        setTimeout(() => { el.classList.remove("reveal", "is-in"); el.style.transitionDelay = ""; }, 900);
+        setTimeout(() => { el.classList.remove("reveal", "is-in"); el.style.transitionDelay = ""; }, 1000);
       });
     }, { rootMargin: "0px 0px -8% 0px" });
-    $$(".reveal").forEach((el, i) => {
-      el.style.transitionDelay = `${(i % 3) * 70}ms`;
+    // каскад: соседние карточки появляются друг за другом
+    $$(".reveal").forEach((el) => {
+      const i = Array.prototype.indexOf.call(el.parentElement.children, el);
+      el.style.transitionDelay = `${Math.min(i, 5) * 90}ms`;
       io.observe(el);
     });
+
+    const statsIO = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        $$(".stat__value", en.target).forEach(countUp);
+        statsIO.unobserve(en.target);
+      });
+    }, { threshold: 0.4 });
+    statsIO.observe($("#stats"));
   } else {
-    $$(".reveal").forEach((el) => el.classList.add("is-in"));
+    $$(".reveal").forEach((el) => el.classList.add("is-in", "is-seen"));
   }
   } catch (err) {
     console.error("[сайт] ошибка при отрисовке:", err);

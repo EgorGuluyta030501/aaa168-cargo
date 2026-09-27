@@ -11,9 +11,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260927123755">
+  <link rel="stylesheet" href="css/style.css?v=20260927124930">
 </head>
 <body>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <div class="container header__inner">
@@ -38,6 +40,8 @@
   <!-- ГЛАВНЫЙ ЭКРАН -->
   <section class="hero">
     <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--1" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--2" aria-hidden="true"></div>
     <div class="container hero__inner">
       <div class="hero__main">
         <div class="badge"><i></i><span data-text="hero.badge"></span></div>
@@ -50,7 +54,7 @@
         <ul class="trust" id="trust"></ul>
       </div>
 
-      <form class="quick reveal" id="quick-form" novalidate>
+      <form class="quick" id="quick-form" novalidate>
         <h2 class="quick__title" data-rich="hero.quick.title"></h2>
         <p class="quick__sub" data-text="hero.quick.sub"></p>
         <label class="field">
@@ -152,40 +156,8 @@
     </div>
   </section>
 
-  <!-- КАЛЬКУЛЯТОР -->
-  <section class="section" id="calculator">
-    <div class="container split">
-      <div class="split__text">
-        <h2 class="section__title" data-rich="calculator.title"></h2>
-        <p class="section__lead" data-text="calculator.text"></p>
-        <ul class="bullets" id="calc-bullets"></ul>
-      </div>
-      <div class="panel reveal">
-        <div class="panel__head">
-          <h3 class="panel__title" data-text="calculator.panelTitle"></h3>
-          <span class="chip" id="calc-rate"></span>
-        </div>
-        <p class="panel__sub" data-text="calculator.panelSub"></p>
-        <div class="seg" id="calc-modes" role="tablist" aria-label="Способ доставки"></div>
-        <label class="field">
-          <span class="field__label">Вес груза, кг</span>
-          <input class="input" id="calc-weight" type="number" inputmode="decimal" min="0" step="1">
-        </label>
-        <div class="presets" id="calc-presets"></div>
-        <div class="result">
-          <div>
-            <div class="result__label" id="calc-label"></div>
-            <div class="result__price" id="calc-price">—</div>
-            <div class="result__note" id="calc-note"></div>
-          </div>
-          <a class="btn btn--primary" href="#contact" id="calc-fix" data-text="calculator.fixBtn"></a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- О КОМПАНИИ -->
-  <section class="section section--alt" id="about">
+  <section class="section" id="about">
     <div class="container split split--even">
       <div class="split__text">
         <h2 class="section__title" data-rich="about.title"></h2>
@@ -198,7 +170,7 @@
   </section>
 
   <!-- ВОПРОСЫ -->
-  <section class="section" id="faq">
+  <section class="section section--alt" id="faq">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="faq.title"></h2>
@@ -208,7 +180,7 @@
   </section>
 
   <!-- ЗАЯВКА -->
-  <section class="section section--alt" id="contact">
+  <section class="section" id="contact">
     <div class="container split">
       <div class="split__text">
         <h2 class="section__title" data-rich="contact.title"></h2>
@@ -304,7 +276,7 @@
   <button class="lightbox__close" type="button" aria-label="Закрыть">×</button>
 </dialog>
 
-<script src="content.js?v=20260927123755"></script>
-<script src="js/main.js?v=20260927123755"></script>
+<script src="content.js?v=20260927124930"></script>
+<script src="js/main.js?v=20260927124930"></script>
 </body>
 </html>
