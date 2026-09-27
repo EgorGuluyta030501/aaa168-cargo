@@ -8,6 +8,10 @@
 
   document.documentElement.classList.add("js");
 
+  // Если скрипт упадёт (например, в content.js чего-то не хватает),
+  // блоки страницы всё равно станут видимыми — см. catch в конце файла.
+  try {
+
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const get = (obj, path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
@@ -235,6 +239,8 @@
 
   /* ---------- Быстрая заявка на главном экране ---------- */
   const quick = $("#quick-form");
+  if (!S.hero.quick) quick.hidden = true;
+  else {
   const countries = [...(CL ? CL.countries : []), "Другая страна"];
   const clearances = [...(CL ? CL.options.map((o) => o.title.replace(" доставка", "").replace("-доставка", "")) : []), "Не знаю"];
   let quickClearance = clearances[clearances.length - 1];
@@ -277,6 +283,7 @@
     window.open(waLink(text), "_blank", "noopener");
   });
   quick.elements.phone.addEventListener("input", (e) => e.target.classList.remove("is-invalid"));
+  }
   countrySelect.innerHTML = options([...(CL ? CL.countries : []), "Другая страна"]);
   clearanceSelect.innerHTML = options([S.contact.dontKnow, ...(CL ? CL.options.map((o) => o.title) : [])]);
 
@@ -412,5 +419,9 @@
     });
   } else {
     $$(".reveal").forEach((el) => el.classList.add("is-in"));
+  }
+  } catch (err) {
+    console.error("[сайт] ошибка при отрисовке:", err);
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("is-in"));
   }
 })();
