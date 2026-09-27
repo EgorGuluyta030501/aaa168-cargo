@@ -183,7 +183,7 @@
   document.addEventListener("click", (e) => {
     const shot = e.target.closest(".shot");
     if (!shot || !lightbox.showModal) return;
-    const img = $("img", lightbox);
+    const img = $("img", lightbox) || lightbox.appendChild(document.createElement("img"));
     img.src = shot.dataset.full;
     img.alt = $("img", shot).alt;
     lightbox.showModal();
