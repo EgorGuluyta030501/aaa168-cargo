@@ -321,6 +321,38 @@ h1, h2, h3 { margin: 0; }
 .card__meta { color: var(--muted); }
 .card .link-arrow { font-size: 14px; }
 
+/* ---------- Белая / карго ---------- */
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 800px) { .options { grid-template-columns: 1fr; } }
+.option {
+  display: flex; flex-direction: column;
+  padding: clamp(22px, 3vw, 32px); border-radius: 22px;
+  background: var(--surface); border: 1px solid var(--line);
+  transition: border-color .25s;
+}
+.option:hover { border-color: rgba(232, 182, 76, .35); }
+.option:first-child { background: linear-gradient(160deg, rgba(232, 182, 76, .08), transparent 60%), var(--surface); }
+.option__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+.option__title { margin-bottom: 10px; font-size: clamp(22px, 2.4vw, 28px); font-weight: 900; letter-spacing: -.02em; }
+.option__text { margin-bottom: 18px; color: var(--muted); }
+.option__points { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 10px; flex: 1; }
+.option__points li { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+.option__points svg { flex-shrink: 0; width: 20px; height: 20px; padding: 4px; border-radius: 50%; background: rgba(232, 182, 76, .15); color: var(--gold); stroke-width: 3; }
+
+.countries {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px;
+  margin-top: 16px; padding: 20px 24px; border-radius: 18px;
+  border: 1px dashed rgba(232, 182, 76, .3); background: rgba(232, 182, 76, .03);
+}
+.countries__title { font-weight: 800; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+.countries__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.countries__list li {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px 7px 10px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); font-size: 14px; font-weight: 700;
+}
+.countries__list svg { width: 16px; height: 16px; color: var(--gold); }
+
 /* ---------- Шаги ---------- */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
 .step {

@@ -69,8 +69,23 @@
     </div>
   </section>
 
+  <!-- БЕЛАЯ / КАРГО И СТРАНЫ -->
+  <section class="section section--alt" id="clearance">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="clearance.title"></h2>
+        <p class="section__lead" data-text="clearance.lead"></p>
+      </div>
+      <div class="options" id="clearance-list"></div>
+      <div class="countries reveal">
+        <p class="countries__title" data-text="clearance.countriesTitle"></p>
+        <ul class="countries__list" id="countries-list"></ul>
+      </div>
+    </div>
+  </section>
+
   <!-- ПРЕИМУЩЕСТВА -->
-  <section class="section section--alt" id="advantages">
+  <section class="section" id="advantages">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="advantages.title"></h2>
@@ -81,7 +96,7 @@
   </section>
 
   <!-- КАК РАБОТАЕМ -->
-  <section class="section" id="steps">
+  <section class="section section--alt" id="steps">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="steps.title"></h2>
@@ -92,7 +107,7 @@
   </section>
 
   <!-- СКЛАД: ВИДЕО -->
-  <section class="section section--alt" id="warehouse">
+  <section class="section" id="warehouse">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="warehouse.title"></h2>
@@ -103,7 +118,7 @@
   </section>
 
   <!-- ОТЗЫВЫ -->
-  <section class="section" id="reviews">
+  <section class="section section--alt" id="reviews">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="reviews.title"></h2>
@@ -114,7 +129,7 @@
   </section>
 
   <!-- КАЛЬКУЛЯТОР -->
-  <section class="section section--alt" id="calculator">
+  <section class="section" id="calculator">
     <div class="container split">
       <div class="split__text">
         <h2 class="section__title" data-rich="calculator.title"></h2>
@@ -146,7 +161,7 @@
   </section>
 
   <!-- О КОМПАНИИ -->
-  <section class="section" id="about">
+  <section class="section section--alt" id="about">
     <div class="container split split--even">
       <div class="split__text">
         <h2 class="section__title" data-rich="about.title"></h2>
@@ -159,7 +174,7 @@
   </section>
 
   <!-- ВОПРОСЫ -->
-  <section class="section section--alt" id="faq">
+  <section class="section" id="faq">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="faq.title"></h2>
@@ -169,7 +184,7 @@
   </section>
 
   <!-- ЗАЯВКА -->
-  <section class="section" id="contact">
+  <section class="section section--alt" id="contact">
     <div class="container split">
       <div class="split__text">
         <h2 class="section__title" data-rich="contact.title"></h2>
@@ -200,6 +215,16 @@
           <label class="field">
             <span class="field__label">Телефон</span>
             <input class="input" name="phone" type="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+          </label>
+        </div>
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Страна доставки</span>
+            <select class="input" name="country" id="form-country"></select>
+          </label>
+          <label class="field">
+            <span class="field__label">Оформление</span>
+            <select class="input" name="clearance" id="form-clearance"></select>
           </label>
         </div>
         <label class="field">

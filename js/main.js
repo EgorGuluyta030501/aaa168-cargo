@@ -138,6 +138,25 @@
   $("#transport-list").innerHTML = S.transport.items.map((it) => card(it, S.transport.linkText)).join("");
   $("#advantages-list").innerHTML = S.advantages.items.map((it) => card(it, S.advantages.linkText)).join("");
 
+  /* ---------- Белая / карго и страны ---------- */
+  const CL = S.clearance;
+  if (CL) {
+    $("#clearance-list").innerHTML = CL.options
+      .map((o) => `
+        <article class="option reveal">
+          <div class="option__head">
+            <span class="card__icon" aria-hidden="true">${ICONS[o.icon] || ""}</span>
+            <span class="chip">${esc(o.tag)}</span>
+          </div>
+          <h3 class="option__title">${esc(o.title)}</h3>
+          <p class="option__text">${esc(o.text)}</p>
+          <ul class="option__points">${o.points.map((pt) => `<li>${ICONS.check}${esc(pt)}</li>`).join("")}</ul>
+          <a class="link-arrow" href="#contact" data-topic="${esc(o.title)}" data-clearance="${esc(o.title)}">Рассчитать <span>→</span></a>
+        </article>`)
+      .join("");
+    $("#countries-list").innerHTML = CL.countries.map((c) => `<li>${ICONS.track}${esc(c)}</li>`).join("");
+  }
+
   /* ---------- Видео ---------- */
   // Видео не грузится, пока его не нажмут: на странице только лёгкая картинка-превью
   const videoCard = (v) => `
@@ -233,11 +252,18 @@
     .join("");
   message.placeholder = S.contact.messagePlaceholder;
 
+  const countrySelect = $("#form-country");
+  const clearanceSelect = $("#form-clearance");
+  const options = (list) => list.map((v) => `<option>${esc(v)}</option>`).join("");
+  countrySelect.innerHTML = options([...(CL ? CL.countries : []), "Другая страна"]);
+  clearanceSelect.innerHTML = options([S.contact.dontKnow, ...(CL ? CL.options.map((o) => o.title) : [])]);
+
   // Кнопки «Рассчитать» в карточках подставляют тему в заявку
   document.addEventListener("click", (e) => {
     const link = e.target.closest("[data-topic]");
     if (!link) return;
     message.value = `Интересует: ${link.dataset.topic}. `;
+    if (link.dataset.clearance) clearanceSelect.value = link.dataset.clearance;
   });
 
   form.addEventListener("submit", (e) => {
@@ -253,6 +279,8 @@
       "Заявка с сайта",
       `Имя: ${name.value.trim()}`,
       `Телефон: ${phone.value.trim()}`,
+      `Страна: ${countrySelect.value}`,
+      `Оформление: ${clearanceSelect.value}`,
       `Доставка: ${modeSelect.value}`,
       message.value.trim() && `Груз: ${message.value.trim()}`,
     ].filter(Boolean).join("\n");
