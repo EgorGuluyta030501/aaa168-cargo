@@ -68,11 +68,11 @@ window.SITE = {
   ],
 
   nav: [
+    { href: "#about", label: "О компании" },
     { href: "#transport", label: "Виды доставки" },
     { href: "#clearance", label: "Карго" },
     { href: "#warehouse", label: "Склад" },
     { href: "#reviews", label: "Отзывы" },
-    { href: "#about", label: "О компании" },
     { href: "#faq", label: "Вопросы" },
   ],
 
