@@ -117,7 +117,7 @@
   $("#transport-list").innerHTML = S.transport.items.map((it) => card(it, S.transport.linkText)).join("");
   $("#advantages-list").innerHTML = S.advantages.items.map((it) => card(it, S.advantages.linkText)).join("");
 
-  /* ---------- Белая / карго и страны ---------- */
+  /* ---------- Карго и страны ---------- */
   const CL = S.clearance;
   if (CL) {
     $("#clearance-list").innerHTML = CL.options
@@ -130,7 +130,7 @@
           <h3 class="option__title">${esc(o.title)}</h3>
           <p class="option__text">${esc(o.text)}</p>
           <ul class="option__points">${o.points.map((pt) => `<li>${ICONS.check}${esc(pt)}</li>`).join("")}</ul>
-          <a class="link-arrow" href="#contact" data-topic="${esc(o.title)}" data-clearance="${esc(o.title)}">Рассчитать <span>→</span></a>
+          <a class="link-arrow" href="#contact" data-topic="${esc(o.title)}">Рассчитать <span>→</span></a>
         </article>`)
       .join("");
     $("#countries-list").innerHTML = CL.countries.map((c) => `<li>${ICONS.track}${esc(c)}</li>`).join("");
@@ -231,7 +231,6 @@
   message.placeholder = S.contact.messagePlaceholder;
 
   const countrySelect = $("#form-country");
-  const clearanceSelect = $("#form-clearance");
   const options = (list) => list.map((v) => `<option>${esc(v)}</option>`).join("");
 
   /* ---------- Быстрая заявка на главном экране ---------- */
@@ -239,23 +238,23 @@
   if (!S.hero.quick) quick.hidden = true;
   else {
   const countries = [...(CL ? CL.countries : []), "Другая страна"];
-  const clearances = [...(CL ? CL.options.map((o) => o.title.replace(" доставка", "").replace("-доставка", "")) : []), "Не знаю"];
-  let quickClearance = clearances[clearances.length - 1];
+  const modes = [...(S.contact.modes || []), "Не знаю"];
+  let quickMode = modes[modes.length - 1];
 
   $("#quick-country").innerHTML = options(countries);
-  const qSeg = $("#quick-clearance");
-  qSeg.innerHTML = clearances
+  const qSeg = $("#quick-mode");
+  qSeg.innerHTML = modes
     .map((c) => `<button type="button" role="radio" aria-checked="false" data-v="${esc(c)}">${esc(c)}</button>`)
     .join("");
   const paintSeg = () => $$("button", qSeg).forEach((b) => {
-    const on = b.dataset.v === quickClearance;
+    const on = b.dataset.v === quickMode;
     b.classList.toggle("is-active", on);
     b.setAttribute("aria-checked", String(on));
   });
   qSeg.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    quickClearance = b.dataset.v;
+    quickMode = b.dataset.v;
     paintSeg();
   });
   paintSeg();
@@ -273,7 +272,7 @@
     const text = [
       "Заявка на расчёт с сайта",
       `Страна: ${quick.elements.country.value}`,
-      `Оформление: ${quickClearance}`,
+      `Доставка: ${quickMode}`,
       w && `Вес: ${w} кг`,
       `Телефон: ${phone.value.trim()}`,
     ].filter(Boolean).join("\n");
@@ -282,14 +281,12 @@
   quick.elements.phone.addEventListener("input", (e) => e.target.classList.remove("is-invalid"));
   }
   countrySelect.innerHTML = options([...(CL ? CL.countries : []), "Другая страна"]);
-  clearanceSelect.innerHTML = options([S.contact.dontKnow, ...(CL ? CL.options.map((o) => o.title) : [])]);
 
   // Кнопки «Рассчитать» в карточках подставляют тему в заявку
   document.addEventListener("click", (e) => {
     const link = e.target.closest("[data-topic]");
     if (!link) return;
     message.value = `Интересует: ${link.dataset.topic}. `;
-    if (link.dataset.clearance) clearanceSelect.value = link.dataset.clearance;
   });
 
   form.addEventListener("submit", (e) => {
@@ -306,7 +303,6 @@
       `Имя: ${name.value.trim()}`,
       `Телефон: ${phone.value.trim()}`,
       `Страна: ${countrySelect.value}`,
-      `Оформление: ${clearanceSelect.value}`,
       `Доставка: ${modeSelect.value}`,
       message.value.trim() && `Груз: ${message.value.trim()}`,
     ].filter(Boolean).join("\n");

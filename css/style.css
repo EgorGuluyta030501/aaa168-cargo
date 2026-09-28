@@ -269,7 +269,7 @@ h1, h2, h3 { margin: 0; }
 .card .link-arrow { font-size: 14px; }
 
 /* ---------- Белая / карго ---------- */
-.options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px; }
 @media (max-width: 800px) { .options { grid-template-columns: 1fr; } }
 .option {
   display: flex; flex-direction: column;
@@ -686,3 +686,7 @@ select.input {
   .section__head::before { width: 56px; transition: none; }
   .btn--primary::after { display: none; }
 }
+
+/* Если карточка оформления одна — пункты в строку */
+.option:only-child .option__points { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.option:only-child .option__text { max-width: 720px; }
