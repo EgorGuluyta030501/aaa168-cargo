@@ -120,7 +120,6 @@
       </div>` : ""}
     </article>`;
 
-  if (S.directions) $("#directions-list").innerHTML = S.directions.items.map((it) => card(it, S.directions.linkText)).join("");
   $("#transport-list").innerHTML = S.transport.items.map((it) => card(it, S.transport.linkText)).join("");
   $("#advantages-list").innerHTML = S.advantages.items.map((it) => card(it, S.advantages.linkText)).join("");
 
@@ -215,7 +214,6 @@
     .join("");
 
   const footerList = (items) => items.map((it) => `<li><a href="#contact" data-topic="${esc(it.title)}">${esc(it.title)}</a></li>`).join("");
-  if (S.directions) $("#footer-directions").innerHTML = footerList(S.directions.items);
   $("#footer-transport").innerHTML = footerList(S.transport.items);
   $("#footer-advantages").innerHTML = footerList(S.advantages.items);
 

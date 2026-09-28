@@ -68,28 +68,13 @@ window.SITE = {
   ],
 
   nav: [
-    { href: "#directions", label: "Что возим" },
     { href: "#transport", label: "Виды доставки" },
     { href: "#clearance", label: "Карго" },
     { href: "#warehouse", label: "Склад" },
     { href: "#reviews", label: "Отзывы" },
+    { href: "#about", label: "О компании" },
     { href: "#faq", label: "Вопросы" },
   ],
-
-  // Что возим. icon: gear, sofa, chip, shirt, cart, sample
-  directions: {
-    title: "Что мы возим",
-    lead: "Основные категории грузов. Вашей нет в списке — опишите товар в заявке, посчитаем.",
-    linkText: "Рассчитать",
-    items: [
-      { icon: "gear", title: "Оборудование", text: "Станки, производственные линии, крупногабаритные и тяжёлые грузы", price: "Ж/Д · Авто", term: "Крупные партии" },
-      { icon: "sofa", title: "Мебель", text: "Усиленная упаковка: обрешётка, стрейч-плёнка, паллетный борт. Грузы 50+ кг", price: "Авто · Ж/Д", term: "Бережная упаковка" },
-      { icon: "chip", title: "Электроника", text: "Гаджеты, комплектующие, техника — срочные и ценные партии", price: "Авто · Авиа", term: "Срочно и ценно" },
-      { icon: "shirt", title: "Одежда и обувь", text: "Сборные грузы от разных поставщиков в одной отправке", price: "Авто", term: "Сборный груз" },
-      { icon: "cart", title: "Товары народного потребления", text: "Крупные партии по самой низкой стоимости", price: "Ж/Д", term: "Выгодно" },
-      { icon: "sample", title: "Образцы", text: "Образцы и срочные мелкие отправки авиа за 5–8 дней", price: "Авиа", term: "5–8 дней" },
-    ],
-  },
 
   // Виды перевозок. icon: truck, train, plane, customs, track, camera, manager, box, shield
   transport: {
