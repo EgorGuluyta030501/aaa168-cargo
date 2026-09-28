@@ -690,3 +690,8 @@ select.input {
 /* Если карточка оформления одна — пункты в строку */
 .option:only-child .option__points { display: flex; flex-wrap: wrap; gap: 12px 28px; }
 .option:only-child .option__text { max-width: 720px; }
+
+/* Подсказки под формой и подвал */
+.form__hint--small { margin-top: 6px; font-size: 12px; }
+.footer__title--gap { margin-top: 28px; }
+.footer__bottom p:first-child { max-width: 900px; line-height: 1.6; }

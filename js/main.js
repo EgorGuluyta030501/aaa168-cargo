@@ -31,6 +31,12 @@
     manager: svg('<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20c0 1.1-1.3 2-3 2h-3"/>'),
     box: svg('<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/>'),
     shield: svg('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'),
+    gear: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+    sofa: svg('<path d="M5 11V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v3"/><path d="M3 13a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M6 19v2M18 19v2"/>'),
+    chip: svg('<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>'),
+    shirt: svg('<path d="M20.4 6.6 16 3a4 4 0 0 1-8 0L3.6 6.6a1 1 0 0 0-.3 1.2l1.4 2.9a1 1 0 0 0 1.2.5L8 10.5V20a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-9.5l2.1.7a1 1 0 0 0 1.2-.5l1.4-2.9a1 1 0 0 0-.3-1.2z"/>'),
+    cart: svg('<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2"/>'),
+    sample: svg('<path d="M9 3h6M10 3v6L4.6 18.2A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.8L14 9V3"/><path d="M7 15h10"/>'),
     check: svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
   };
 
@@ -114,6 +120,7 @@
       </div>` : ""}
     </article>`;
 
+  if (S.directions) $("#directions-list").innerHTML = S.directions.items.map((it) => card(it, S.directions.linkText)).join("");
   $("#transport-list").innerHTML = S.transport.items.map((it) => card(it, S.transport.linkText)).join("");
   $("#advantages-list").innerHTML = S.advantages.items.map((it) => card(it, S.advantages.linkText)).join("");
 
@@ -208,6 +215,7 @@
     .join("");
 
   const footerList = (items) => items.map((it) => `<li><a href="#contact" data-topic="${esc(it.title)}">${esc(it.title)}</a></li>`).join("");
+  if (S.directions) $("#footer-directions").innerHTML = footerList(S.directions.items);
   $("#footer-transport").innerHTML = footerList(S.transport.items);
   $("#footer-advantages").innerHTML = footerList(S.advantages.items);
 
@@ -229,6 +237,8 @@
     .map((v) => `<option>${esc(v)}</option>`)
     .join("");
   message.placeholder = S.contact.messagePlaceholder;
+  const budgetSelect = $("#form-budget");
+  budgetSelect.innerHTML = `<option value="">Выберите бюджет</option>` + (S.contact.budgets || []).map((v) => `<option>${esc(v)}</option>`).join("");
 
   const countrySelect = $("#form-country");
   const options = (list) => list.map((v) => `<option>${esc(v)}</option>`).join("");
@@ -304,6 +314,7 @@
       `Телефон: ${phone.value.trim()}`,
       `Страна: ${countrySelect.value}`,
       `Доставка: ${modeSelect.value}`,
+      budgetSelect.value && `Бюджет: ${budgetSelect.value}`,
       message.value.trim() && `Груз: ${message.value.trim()}`,
     ].filter(Boolean).join("\n");
 

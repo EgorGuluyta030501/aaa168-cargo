@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260928220849">
+  <link rel="stylesheet" href="css/style.css?v=20260928221452">
 </head>
 <body>
 
@@ -86,8 +86,19 @@
     <div class="ticker" aria-hidden="true"><div class="ticker__track" id="ticker"></div></div>
   </section>
 
+  <!-- ЧТО ВОЗИМ -->
+  <section class="section" id="directions">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-rich="directions.title"></h2>
+        <p class="section__lead" data-text="directions.lead"></p>
+      </div>
+      <div class="grid grid--3" id="directions-list"></div>
+    </div>
+  </section>
+
   <!-- ВИДЫ ПЕРЕВОЗОК -->
-  <section class="section" id="transport">
+  <section class="section section--alt" id="transport">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="transport.title"></h2>
@@ -98,7 +109,7 @@
   </section>
 
   <!-- БЕЛАЯ / КАРГО И СТРАНЫ -->
-  <section class="section section--alt" id="clearance">
+  <section class="section" id="clearance">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="clearance.title"></h2>
@@ -113,7 +124,7 @@
   </section>
 
   <!-- ПРЕИМУЩЕСТВА -->
-  <section class="section" id="advantages">
+  <section class="section section--alt" id="advantages">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="advantages.title"></h2>
@@ -124,7 +135,7 @@
   </section>
 
   <!-- КАК РАБОТАЕМ -->
-  <section class="section section--alt" id="steps">
+  <section class="section" id="steps">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="steps.title"></h2>
@@ -135,7 +146,7 @@
   </section>
 
   <!-- СКЛАД: ВИДЕО -->
-  <section class="section" id="warehouse">
+  <section class="section section--alt" id="warehouse">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="warehouse.title"></h2>
@@ -146,7 +157,7 @@
   </section>
 
   <!-- ОТЗЫВЫ -->
-  <section class="section section--alt" id="reviews">
+  <section class="section" id="reviews">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="reviews.title"></h2>
@@ -157,7 +168,7 @@
   </section>
 
   <!-- О КОМПАНИИ -->
-  <section class="section" id="about">
+  <section class="section section--alt" id="about">
     <div class="container split split--even">
       <div class="split__text">
         <h2 class="section__title" data-rich="about.title"></h2>
@@ -170,7 +181,7 @@
   </section>
 
   <!-- ВОПРОСЫ -->
-  <section class="section section--alt" id="faq">
+  <section class="section" id="faq">
     <div class="container">
       <div class="section__head">
         <h2 class="section__title" data-rich="faq.title"></h2>
@@ -180,7 +191,7 @@
   </section>
 
   <!-- ЗАЯВКА -->
-  <section class="section" id="contact">
+  <section class="section section--alt" id="contact">
     <div class="container split">
       <div class="split__text">
         <h2 class="section__title" data-rich="contact.title"></h2>
@@ -224,12 +235,17 @@
           </label>
         </div>
         <label class="field">
+          <span class="field__label">Бюджет</span>
+          <select class="input" name="budget" id="form-budget"></select>
+        </label>
+        <label class="field">
           <span class="field__label">Что нужно привезти</span>
           <textarea class="input" name="message" id="form-message" rows="4"></textarea>
         </label>
         <button class="btn btn--primary btn--lg" type="submit" data-text="contact.submitBtn"></button>
         <p class="form__error" id="form-error" role="alert" hidden>Заполните имя и телефон</p>
-        <p class="form__hint" data-text="contact.hint"></p>
+        <p class="form__hint" data-text="contact.formNote"></p>
+        <p class="form__hint form__hint--small" data-text="contact.hint"></p>
       </form>
     </div>
   </section>
@@ -249,11 +265,13 @@
         <a class="footer__link" data-email></a>
       </div>
       <div>
-        <p class="footer__title">Перевозки</p>
-        <ul id="footer-transport"></ul>
+        <p class="footer__title">Что возим</p>
+        <ul id="footer-directions"></ul>
       </div>
       <div>
-        <p class="footer__title">Услуги</p>
+        <p class="footer__title">Перевозки</p>
+        <ul id="footer-transport"></ul>
+        <p class="footer__title footer__title--gap">Услуги</p>
         <ul id="footer-advantages"></ul>
       </div>
     </div>
@@ -277,7 +295,7 @@
   <button class="lightbox__close" type="button" aria-label="Закрыть">×</button>
 </dialog>
 
-<script src="content.js?v=20260928220849"></script>
-<script src="js/main.js?v=20260928220849"></script>
+<script src="content.js?v=20260928221452"></script>
+<script src="js/main.js?v=20260928221452"></script>
 </body>
 </html>
