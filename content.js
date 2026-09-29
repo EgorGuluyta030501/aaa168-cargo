@@ -142,7 +142,7 @@ window.SITE = {
       { title: "Оперативность", text: "Отвечаем на запросы в течение часа" },
     ],
     // видео рядом с текстом о компании
-    video: { src: "assets/video/rabotaem.mp4", poster: "assets/video/rabotaem.jpg", title: "Добрый день. Работаем для вас" },
+    video: { src: "assets/video/o-kompanii.mp4", poster: "assets/video/o-kompanii.jpg", title: "Знакомьтесь: AAA168" },
   },
 
   // Видео со склада. Новое видео: положите .mp4 и картинку-превью .jpg в assets/video
@@ -151,7 +151,9 @@ window.SITE = {
     title: "Наш склад в Китае",
     lead: "Реальные видео: приёмка, проверка товара, упаковка и погрузка. Такие же отчёты получаете вы по своему грузу.",
     videos: [
+      { src: "assets/video/sklad-aaa168.mp4", poster: "assets/video/sklad-aaa168.jpg", title: "Склад AAA168 в Китае" },
       { src: "assets/video/sklad.mp4", poster: "assets/video/sklad.jpg", title: "Склад и приёмка грузов" },
+      { src: "assets/video/rabotaem.mp4", poster: "assets/video/rabotaem.jpg", title: "Работаем для вас" },
       { src: "assets/video/proverka.mp4", poster: "assets/video/proverka.jpg", title: "Проверка товара" },
       { src: "assets/video/pogruzka.mp4", poster: "assets/video/pogruzka.jpg", title: "Погрузка фуры" },
       { src: "assets/video/fura.mp4", poster: "assets/video/fura.jpg", title: "Отправка в Россию" },
@@ -161,17 +163,17 @@ window.SITE = {
   // Отзывы. Скриншот: положите картинку в assets/reviews и добавьте строку в screenshots.
   reviews: {
     title: "Отзывы клиентов",
-    lead: "Пишут нам в Telegram после получения груза.",
+    lead: "Пишут нам в Telegram и WhatsApp после получения груза. Листайте вправо →",
     screenshots: [
-      { src: "assets/reviews/review-1.jpg", alt: "Отзыв клиентки: 55 кг, 18 дней до Москвы, всё отлично, заказываю не первый раз" },
+      { src: "assets/reviews/review-7.jpg", alt: "Отзыв: доставка 11 дней, огромная люстра доехала без проблем, работаю с карго больше года" },
+      { src: "assets/reviews/review-2.jpg", alt: "Отзыв: товар забрал, быстрая доставка до Беларуси, уже год радуете" },
+      { src: "assets/reviews/review-3.jpg", alt: "Отзыв: груз пришёл точно в срок, отдельное спасибо за упаковку, рекомендую" },
+      { src: "assets/reviews/review-1.jpg", alt: "Отзыв: 55 кг, 18 дней до Москвы, всё отлично, заказываю не первый раз" },
+      { src: "assets/reviews/review-4.jpg", alt: "Отзыв: очередная коробочка получена, упаковано всё отлично" },
+      { src: "assets/reviews/review-5.jpg", alt: "Отзыв: карго всё проверили и прислали видео работы, сервис супер" },
+      { src: "assets/reviews/review-6.jpg", alt: "Отзыв: карго всё проверило, фото выслали, сервис на высоте" },
     ],
-    texts: [
-      {
-        text: "Сотрудничаем с ООО «И ЛУ ФА» более двух лет. Возим мебель и оборудование. Всегда чётко по срокам, грузы приходят в идеальном состоянии. Отдельное спасибо за помощь в сложных таможенных ситуациях — менеджеры всегда на связи и готовы подсказать лучшее решение.",
-        author: "Алексей Иванов, г. Москва",
-        role: "импортёр мебели и оборудования",
-      },
-    ],
+    texts: [],
   },
 
   faq: {

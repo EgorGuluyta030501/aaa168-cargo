@@ -695,3 +695,47 @@ select.input {
 .form__hint--small { margin-top: 6px; font-size: 12px; }
 .footer__title--gap { margin-top: 28px; }
 .footer__bottom p:first-child { max-width: 900px; line-height: 1.6; }
+
+/* ============================================================
+   ЛИСТАЛКИ (отзывы, видео со склада)
+   ============================================================ */
+.slider { position: relative; }
+.slider__nav { display: flex; justify-content: flex-end; gap: 10px; margin: -64px 0 20px; }
+.slider.is-static .slider__nav { visibility: hidden; }
+.slider__btn {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line-2); color: var(--gold);
+  transition: background .2s, color .2s, border-color .2s, opacity .2s, transform .2s;
+}
+.slider__btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.slider__btn:hover:not(:disabled) { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); transform: scale(1.06); }
+.slider__btn:disabled { opacity: .3; cursor: default; }
+
+.slider__track {
+  display: flex; gap: 16px; align-items: flex-start;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-left: 0;
+  padding-bottom: 6px; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, #000 88%, transparent);
+}
+.slider__track::-webkit-scrollbar { display: none; }
+.slider__track:focus-visible { outline: 2px solid rgba(232, 182, 76, .5); outline-offset: 4px; border-radius: 12px; }
+.slider__track.is-dragging { scroll-snap-type: none; cursor: grabbing; }
+.slider__track.is-dragging * { pointer-events: none; }
+.slider__track > * { flex: 0 0 auto; scroll-snap-align: start; }
+
+/* отзывы: скриншоты одинаковой высоты */
+#reviews-list .shot { height: 460px; }
+#reviews-list .shot img { width: auto; height: 100%; max-width: none; }
+#reviews-list .review { width: 380px; }
+
+/* видео склада */
+#warehouse-list .vcard { width: 260px; }
+
+@media (max-width: 760px) {
+  .slider__nav { margin: 0 0 14px; justify-content: flex-start; }
+  #reviews-list .shot { height: 400px; }
+  #warehouse-list .vcard { width: 62vw; max-width: 260px; }
+  .slider__track { -webkit-mask-image: none; mask-image: none; }
+}

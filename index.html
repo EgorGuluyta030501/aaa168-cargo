@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260929080748">
+  <link rel="stylesheet" href="css/style.css?v=20260929235302">
 </head>
 <body>
 
@@ -154,7 +154,13 @@
         <h2 class="section__title" data-rich="warehouse.title"></h2>
         <p class="section__lead" data-text="warehouse.lead"></p>
       </div>
-      <div class="videos" id="warehouse-list"></div>
+      <div class="slider reveal">
+        <div class="slider__nav" aria-hidden="false">
+          <button class="slider__btn" type="button" data-dir="-1" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="slider__btn" type="button" data-dir="1" aria-label="Вперёд"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+        <div class="slider__track" id="warehouse-list" tabindex="0" aria-label="Видео со склада"></div>
+      </div>
     </div>
   </section>
 
@@ -165,7 +171,13 @@
         <h2 class="section__title" data-rich="reviews.title"></h2>
         <p class="section__lead" data-text="reviews.lead"></p>
       </div>
-      <div class="reviews" id="reviews-list"></div>
+      <div class="slider reveal">
+        <div class="slider__nav" aria-hidden="false">
+          <button class="slider__btn" type="button" data-dir="-1" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="slider__btn" type="button" data-dir="1" aria-label="Вперёд"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+        <div class="slider__track" id="reviews-list" tabindex="0" aria-label="Отзывы клиентов"></div>
+      </div>
     </div>
   </section>
 
@@ -282,7 +294,7 @@
   <button class="lightbox__close" type="button" aria-label="Закрыть">×</button>
 </dialog>
 
-<script src="content.js?v=20260929080748"></script>
-<script src="js/main.js?v=20260929080748"></script>
+<script src="content.js?v=20260929235302"></script>
+<script src="js/main.js?v=20260929235302"></script>
 </body>
 </html>

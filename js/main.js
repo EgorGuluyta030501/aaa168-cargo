@@ -154,7 +154,7 @@
       <figcaption>${esc(v.title)}</figcaption>
     </figure>`;
 
-  $("#warehouse-list").innerHTML = S.warehouse.videos.map(videoCard).join("");
+  $("#warehouse-list").innerHTML = S.warehouse.videos.map(videoCard).join("").replace(/vcard reveal/g, "vcard");
   if (S.about.video) $("#about-video").innerHTML = videoCard(S.about.video);
 
   document.addEventListener("click", (e) => {
@@ -177,16 +177,57 @@
   const R = S.reviews;
   $("#reviews-list").innerHTML = [
     ...R.texts.map((r) => `
-      <figure class="review panel reveal">
+      <figure class="review panel">
         <div class="review__stars" aria-label="5 из 5">★★★★★</div>
         <blockquote class="review__text">${esc(r.text)}</blockquote>
         <figcaption class="review__author"><strong>${esc(r.author)}</strong><span>${esc(r.role)}</span></figcaption>
       </figure>`),
     ...R.screenshots.map((s) => `
-      <button class="shot reveal" type="button" data-full="${esc(s.src)}" aria-label="Открыть отзыв целиком">
+      <button class="shot" type="button" data-full="${esc(s.src)}" aria-label="Открыть отзыв целиком">
         <img src="${esc(s.src)}" alt="${esc(s.alt)}" loading="lazy">
       </button>`),
   ].join("");
+
+  /* ---------- Листалки (отзывы, видео) ---------- */
+  $$(".slider").forEach((slider) => {
+    const track = $(".slider__track", slider);
+    const [prev, next] = $$(".slider__btn", slider);
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max;
+      slider.classList.toggle("is-static", max <= 0);
+    };
+    $$(".slider__btn", slider).forEach((b) => b.addEventListener("click", () => {
+      const item = track.firstElementChild;
+      const stepW = item ? item.getBoundingClientRect().width + 16 : track.clientWidth;
+      const n = Math.max(1, Math.floor(track.clientWidth / stepW));
+      track.scrollBy({ left: Number(b.dataset.dir) * stepW * n, behavior: "smooth" });
+    }));
+    track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener("resize", update);
+    $$("img", track).forEach((img) => img.addEventListener("load", update));
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); next.click(); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); prev.click(); }
+    });
+    // перетаскивание мышью на компьютере
+    let down = false, startX = 0, startL = 0, moved = false;
+    track.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse") return;
+      down = true; moved = false; startX = e.clientX; startL = track.scrollLeft;
+    });
+    window.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 5) { moved = true; track.classList.add("is-dragging"); }
+      if (moved) track.scrollLeft = startL - dx;
+    });
+    window.addEventListener("pointerup", () => { down = false; track.classList.remove("is-dragging"); });
+    // после перетаскивания клик не открывает отзыв / видео
+    track.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    update();
+  });
 
   const lightbox = $("#lightbox");
   document.addEventListener("click", (e) => {
