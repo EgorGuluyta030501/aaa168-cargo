@@ -1,0 +1,6 @@
+# Настройки GitHub Pages: служебные файлы не публикуются
+exclude:
+  - tests
+  - README.md
+  - .htaccess
+  - .gitignore
