@@ -6,6 +6,10 @@
   const S = window.SITE;
   if (!S) return;
 
+  // tools/build.py открывает страницу с PRERENDER = true и сохраняет готовый текст прямо в index.html,
+  // чтобы Яндекс видел его без JavaScript. В этом режиме анимации не запускаются.
+  const BUILD = window.PRERENDER === true;
+  window.__siteReady = true;
   document.documentElement.classList.add("js");
 
   // Если скрипт упадёт (например, в content.js чего-то не хватает),
@@ -43,12 +47,62 @@
 
   const C = S.contacts;
   const waLink = (text) => `https://wa.me/${C.whatsapp}` + (text ? `?text=${encodeURIComponent(text)}` : "");
+  const tgLink = (text) => `https://t.me/${C.manager}` + (text ? `?text=${encodeURIComponent(text)}` : "");
+  // Заявки идут в Telegram менеджера, если он указан, иначе в WhatsApp
+  const leadLink = (text) => (C.manager ? tgLink(text) : waLink(text));
 
   /* ---------- Тексты, SEO, бренд, контакты ---------- */
+  // находит или создаёт тег в <head>: setHead("meta", "property", "og:title", "content", "...")
+  const setHead = (tag, key, name, attr, value) => {
+    let el = $(`${tag}[${key}="${name}"]`);
+    if (!value) { if (el) el.remove(); return; }
+    if (!el) { el = document.createElement(tag); el.setAttribute(key, name); document.head.appendChild(el); }
+    el.setAttribute(attr, value);
+  };
   if (S.seo) {
-    document.title = S.seo.title;
-    const meta = $('meta[name="description"]');
-    if (meta) meta.content = S.seo.description;
+    const SEO = S.seo;
+    const abs = (path) => (SEO.url && path ? new URL(path, SEO.url).href : "");
+    document.title = SEO.title;
+    setHead("meta", "name", "description", "content", SEO.description);
+    setHead("link", "rel", "canonical", "href", SEO.url);
+    setHead("meta", "property", "og:title", "content", SEO.title);
+    setHead("meta", "property", "og:description", "content", SEO.description);
+    setHead("meta", "property", "og:url", "content", SEO.url);
+    setHead("meta", "property", "og:site_name", "content", S.brand.name);
+    setHead("meta", "property", "og:image", "content", abs(SEO.image));
+    setHead("meta", "name", "yandex-verification", "content", SEO.yandexVerification);
+    setHead("meta", "name", "google-site-verification", "content", SEO.googleVerification);
+
+    // Разметка schema.org: поисковик понимает, что это за компания и какие вопросы на странице
+    const ld = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          name: S.brand.name,
+          legalName: S.brand.company,
+          url: SEO.url,
+          logo: abs(S.brand.logo),
+          description: SEO.description,
+          email: C.email || undefined,
+          telephone: C.phoneRaw || undefined,
+          areaServed: S.clearance ? S.clearance.countries : undefined,
+          sameAs: [C.telegram && "https://t.me/" + C.telegram].filter(Boolean),
+        },
+        {
+          "@type": "FAQPage",
+          mainEntity: S.faq.items.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        },
+      ],
+    };
+    let ldEl = $("#ld-json");
+    if (!ldEl) {
+      ldEl = document.createElement("script");
+      ldEl.type = "application/ld+json";
+      ldEl.id = "ld-json";
+      document.head.appendChild(ldEl);
+    }
+    ldEl.textContent = JSON.stringify(ld);
   }
 
   $$("[data-text]").forEach((el) => { el.textContent = plain(get(S, el.dataset.text)); });
@@ -64,7 +118,11 @@
   $$("[data-brand]").forEach((el) => { el.innerHTML = brandHTML; });
 
   // пустой контакт в content.js — ссылка на него скрывается
-  const bind = (sel, value, apply) => $$(sel).forEach((el) => (value ? apply(el) : (el.hidden = true)));
+  const bind = (sel, value, apply) => $$(sel).forEach((el) => { el.hidden = !value; if (value) apply(el); });
+  bind("[data-lead]", C.manager || C.whatsapp, (el) => { el.href = leadLink(); });
+  $$(".fab").forEach((el) => el.classList.toggle("fab--tg", Boolean(C.manager)));
+  bind("[data-alt]", C.manager && C.whatsapp, () => {});
+  bind("[data-tgmanager]", C.manager, (el) => { el.textContent = "@" + C.manager; el.href = tgLink(); });
   bind("[data-phone]", C.phone, (el) => { el.textContent = C.phone; el.href = "tel:" + C.phoneRaw; });
   bind("[data-phone2]", C.phone2, (el) => { el.textContent = C.phone2; el.href = "tel:" + C.phone2Raw; });
   bind("[data-wa]", C.whatsapp, (el) => { el.href = waLink(); });
@@ -284,9 +342,19 @@
   const options = (list) => list.map((v) => `<option>${esc(v)}</option>`).join("");
 
   /* ---------- Быстрая заявка на главном экране ---------- */
+  // Открывает заявку в мессенджере. Текст ещё и копируется: если мессенджер его
+  // не подставит, клиент просто вставит его в чат.
+  const sendLead = (formEl, e, text) => {
+    const viaWa = e.submitter && e.submitter.dataset.send === "wa";
+    window.open(viaWa ? waLink(text) : leadLink(text), "_blank", "noopener");
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => { $(".form__copied", formEl).hidden = false; }, () => {});
+    }
+  };
+
   const quick = $("#quick-form");
-  if (!S.hero.quick) quick.hidden = true;
-  else {
+  quick.hidden = !S.hero.quick;
+  if (S.hero.quick) {
   const countries = [...(CL ? CL.countries : []), "Другая страна"];
   const modes = [...(S.contact.modes || []), "Не знаю"];
   let quickMode = modes[modes.length - 1];
@@ -312,23 +380,15 @@
 
   quick.addEventListener("submit", (e) => {
     e.preventDefault();
-    const phone = quick.elements.phone;
-    const ok = phone.value.trim() !== "";
-    phone.classList.toggle("is-invalid", !ok);
-    $("#quick-error").hidden = ok;
-    if (!ok) { phone.focus(); return; }
-
     const w = quick.elements.weight.value.trim();
     const text = [
       "Заявка на расчёт с сайта",
       `Страна: ${quick.elements.country.value}`,
       `Доставка: ${quickMode}`,
       w && `Вес: ${w} кг`,
-      `Телефон: ${phone.value.trim()}`,
     ].filter(Boolean).join("\n");
-    window.open(waLink(text), "_blank", "noopener");
+    sendLead(quick, e, text);
   });
-  quick.elements.phone.addEventListener("input", (e) => e.target.classList.remove("is-invalid"));
   }
   countrySelect.innerHTML = options([...(CL ? CL.countries : []), "Другая страна"]);
 
@@ -341,28 +401,18 @@
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = form.elements.name;
-    const phone = form.elements.phone;
-    const bad = [name, phone].filter((f) => !f.value.trim());
-    [name, phone].forEach((f) => f.classList.toggle("is-invalid", bad.includes(f)));
-    $("#form-error").hidden = bad.length === 0;
-    if (bad.length) { bad[0].focus(); return; }
-
     const text = [
       "Заявка с сайта",
-      `Имя: ${name.value.trim()}`,
-      `Телефон: ${phone.value.trim()}`,
       `Страна: ${countrySelect.value}`,
       `Доставка: ${modeSelect.value}`,
       budgetSelect.value && `Бюджет: ${budgetSelect.value}`,
       message.value.trim() && `Груз: ${message.value.trim()}`,
     ].filter(Boolean).join("\n");
-
-    window.open(waLink(text), "_blank", "noopener");
+    sendLead(form, e, text);
   });
-  $$("input", form).forEach((f) => f.addEventListener("input", () => f.classList.remove("is-invalid")));
 
   /* ---------- Анимации ---------- */
+  if (BUILD) return;
   const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Полоса прокрутки вверху страницы

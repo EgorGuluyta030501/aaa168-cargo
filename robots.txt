@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /tests/
+Disallow: /tools/
+
+Sitemap: https://egorguluyta030501.github.io/aaa168-cargo/sitemap.xml

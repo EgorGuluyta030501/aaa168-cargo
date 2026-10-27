@@ -5,8 +5,10 @@
     python tests/qa.py                          # живой сайт на GitHub Pages
     python tests/qa.py http://localhost:8080/   # локальная копия (python -m http.server 8080)
 """
-import sys, urllib.parse
+import json, sys, urllib.parse, urllib.request
 from playwright.sync_api import sync_playwright
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 URL = sys.argv[1] if len(sys.argv) > 1 else "https://egorguluyta030501.github.io/aaa168-cargo/"
 WA = "8615604281718"
@@ -38,6 +40,11 @@ with sync_playwright() as p:
         page.on("console", lambda m: m.type == "error" and not noise(m.text) and errors.append(m.text))
         page.on("requestfailed", lambda r: not noise(r.url) and failed.append(r.url))
         page.on("response", lambda r: r.status >= 400 and failed.append(f"{r.status} {r.url}"))
+        # сайт не должен ничего грузить со сторонних серверов (Google Fonts и т. п.)
+        host = urllib.parse.urlparse(URL).netloc
+        external = []
+        page.on("request", lambda r: not noise(r.url) and r.url.startswith("http")
+                and urllib.parse.urlparse(r.url).netloc != host and external.append(r.url))
         ctx.on("page", lambda pg: popups.append(pg.url))
         # WhatsApp не открываем по-настоящему — запоминаем адрес
         page.add_init_script("window.__opened=[]; window.open=(u)=>{window.__opened.push(u); return null;};")
@@ -52,6 +59,9 @@ with sync_playwright() as p:
         check(P + "нет JS-ошибок", not errors, "; ".join(errors[:3]))
         check(P + "все файлы загрузились", not failed, "; ".join(failed[:5]))
         check(P + "CSP включена", page.query_selector("meta[http-equiv='Content-Security-Policy']"))
+        check(P + "нет запросов к сторонним серверам", not external, str(external[:5]))
+        check(P + "шрифт Onest загружен с сайта",
+              page.evaluate("[...document.fonts].some(f => f.family.includes('Onest') && f.status === 'loaded')"))
         check(P + "CSP ничего не блокирует на сайте", not page.evaluate("window.__csp"), str(page.evaluate("window.__csp")[:5]))
         check(P + "нет горизонтальной прокрутки",
               page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1"),
@@ -99,20 +109,22 @@ with sync_playwright() as p:
             check(P + "меню закрывается после выбора пункта", not page.evaluate("document.body.classList.contains('nav-open')"))
             page.evaluate("window.scrollTo(0,0)")
 
+        # --- персональные данные: сайт их не спрашивает ---
+        check(P + "в формах нет полей имени и телефона",
+              not page.query_selector("form input[type=tel], form input[name=name], form input[name=phone]"))
+        check(P + "есть ссылка на политику конфиденциальности", page.query_selector("footer a[href='privacy.html']"))
+        check(P + "пока нет Telegram менеджера — вторая кнопка скрыта", not page.is_visible(".alt-send"))
+
         # --- быстрая заявка ---
         page.evaluate("window.__opened=[]")
-        page.click("#quick-form button[type=submit]")
-        check(P + "быстрая заявка без телефона — подсказка, не отправляется",
-              page.is_visible("#quick-error") and not page.evaluate("window.__opened.length"))
         page.select_option("#quick-country", "Казахстан")
         page.click("#quick-mode button[data-v='Ж/Д']")
         page.fill("#quick-weight", "300")
-        page.fill("#quick-form input[name=phone]", "+7 700 123 45 67")
         page.click("#quick-form button[type=submit]")
         opened = page.evaluate("window.__opened")
         txt = wa_text(opened[0]) if opened else ""
         check(P + "быстрая заявка уходит в WhatsApp с данными",
-              opened and WA in opened[0] and all(x in txt for x in ["Казахстан", "Ж/Д", "300 кг", "+7 700 123 45 67"]),
+              opened and WA in opened[0] and all(x in txt for x in ["Казахстан", "Ж/Д", "300 кг"]),
               txt.replace("\n", " | "))
 
         # --- анимации ---
@@ -164,24 +176,19 @@ with sync_playwright() as p:
 
         # --- основная форма ---
         page.evaluate("window.__opened=[]")
-        page.click("#lead-form button[type=submit]")
-        check(P + "основная форма без имени — подсказка, не отправляется",
-              page.is_visible("#form-error") and not page.evaluate("window.__opened.length"))
-        page.fill("#lead-form input[name=name]", "Тест")
-        page.fill("#lead-form input[name=phone]", "+7 900 000 00 00")
         page.select_option("#form-country", "Беларусь")
         page.select_option("#form-mode", "Авиа")
         page.select_option("#form-budget", index=2)
         page.fill("#form-message", "мебель, 300 кг")
-        page.click("#lead-form button[type=submit]")
+        page.click("#lead-form button.btn[type=submit]")
         opened = page.evaluate("window.__opened")
         txt = wa_text(opened[0]) if opened else ""
         check(P + "основная форма уходит в WhatsApp со всеми полями",
-              all(x in txt for x in ["Тест", "+7 900 000 00 00", "Беларусь", "Авиа", "Бюджет", "мебель, 300 кг"]),
+              all(x in txt for x in ["Беларусь", "Авиа", "Бюджет", "мебель, 300 кг"]),
               txt.replace("\n", " | "))
         # попытка внедрить HTML через форму не должна попасть в страницу
         page.fill("#form-message", "<img src=x onerror=alert(1)>")
-        page.click("#lead-form button[type=submit]")
+        page.click("#lead-form button.btn[type=submit]")
         check(P + "введённый текст не превращается в HTML на странице",
               not page.query_selector("img[src='x']"))
 
@@ -191,6 +198,56 @@ with sync_playwright() as p:
         check(P + "не открылось лишних вкладок", not popups, str(popups))
         check(P + "за всё время нет JS-ошибок", not errors, "; ".join(errors[:3]))
         ctx.close()
+
+    # --- если в content.js указать Telegram менеджера, заявки уходят туда ---
+    ctx = browser.new_context(viewport={"width": 1366, "height": 800})
+    page = ctx.new_page()
+
+    def with_manager(route):
+        body = route.fetch().text().replace('manager: ""', 'manager: "test_manager"')
+        route.fulfill(body=body, content_type="application/javascript; charset=utf-8")
+    page.route("**/content.js*", with_manager)
+    page.add_init_script("window.__opened=[]; window.open=(u)=>{window.__opened.push(u); return null;};")
+    page.goto(URL, wait_until="load", timeout=60000)
+    page.wait_for_timeout(800)
+    check("[Telegram] кнопка «Написать менеджеру» ведёт в Telegram",
+          page.get_attribute(".hero__actions [data-lead]", "href") == "https://t.me/test_manager"
+          and page.evaluate("document.querySelector('.fab').classList.contains('fab--tg')"))
+    page.fill("#quick-weight", "50")
+    page.click("#quick-form button.quick__btn")
+    page.click("#quick-form .alt-send")
+    opened = page.evaluate("window.__opened")
+    check("[Telegram] заявка уходит в Telegram менеджера, вторая кнопка — в WhatsApp",
+          len(opened) == 2 and opened[0].startswith("https://t.me/test_manager?text=") and "50 кг" in wa_text(opened[0])
+          and WA in opened[1], str(opened))
+    ctx.close()
+
+    # --- что видит поисковый робот без JavaScript ---
+    ctx = browser.new_context(java_script_enabled=False)
+    page = ctx.new_page()
+    page.goto(URL, wait_until="load", timeout=60000)
+    raw = page.evaluate("document.body.innerText")
+    check("[Без JS] текст страницы виден поисковику",
+          all(x in raw for x in ["Доставка грузов из Китая", "Виды доставки", "Вопросы и ответы", "Сколько идёт доставка?"]))
+    check("[Без JS] один заголовок h1", page.evaluate("document.querySelectorAll('h1').length") == 1)
+    check("[Без JS] canonical и превью для соцсетей",
+          page.get_attribute("link[rel=canonical]", "href") and page.get_attribute("meta[property='og:image']", "content"))
+    ld = page.evaluate("document.querySelector('script[type=\"application/ld+json\"]')?.textContent")
+    try:
+        ok = json.loads(ld)["@graph"][0]["@type"] == "Organization"
+    except Exception:
+        ok = False
+    check("[Без JS] разметка schema.org корректна", ok)
+    for path in ["robots.txt", "sitemap.xml", "privacy.html", "favicon.ico", "assets/og-image.jpg"]:
+        try:
+            code = urllib.request.urlopen(URL + path, timeout=30).status
+        except Exception as e:
+            code = str(e)
+        check(f"[Файлы] {path} открывается", code == 200, str(code))
+    page.goto(URL + "privacy.html", wait_until="load")
+    check("[Политика] страница с текстом и ссылкой на главную",
+          "Политика конфиденциальности" in page.title() and page.query_selector("a[href='./']"))
+    ctx.close()
     browser.close()
 
 fails = [r for r in results if not r[0]]
